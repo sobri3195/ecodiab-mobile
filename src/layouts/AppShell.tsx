@@ -4,10 +4,10 @@ import Sidebar from '../components/Sidebar';
 
 const AppShell = () => {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-screen-2xl">
+    <div className="app-shell">
+      <div className="app-shell-content">
         <Sidebar />
-        <main className="flex-1 p-4 pb-28 md:pb-6 lg:p-6">
+        <main className="app-main">
           <Outlet />
         </main>
       </div>

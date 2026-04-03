@@ -3,13 +3,13 @@ import { AlertCenterProvider } from './contexts/alert-center-context';
 import AppShell from './layouts/AppShell';
 
 const Screen = ({ title }: { title: string }) => (
-  <section className="space-y-3">
+  <section className="screen">
     <header>
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
-      <p className="text-sm text-slate-500">Monitor and manage your clinical workflow from this page.</p>
+      <h1 className="screen-title">{title}</h1>
+      <p className="screen-subtitle">Monitor and manage your clinical workflow from this page.</p>
     </header>
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-sm text-slate-600">
+    <div className="screen-card">
+      <p className="screen-card-text">
         This module is ready. Use the bottom navigation to switch quickly between key tasks.
       </p>
     </div>
