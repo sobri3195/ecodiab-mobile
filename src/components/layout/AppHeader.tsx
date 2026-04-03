@@ -1,47 +1,47 @@
-import { Bell, Menu, Search } from 'lucide-react';
+import { Bell, ChevronDown, HeartPulse, UserRound } from 'lucide-react';
 
 type AppHeaderProps = {
-  onOpenMenu: () => void;
   title: string;
 };
 
-const AppHeader = ({ onOpenMenu, title }: AppHeaderProps) => {
+const AppHeader = ({ title }: AppHeaderProps) => {
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <div>
+    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+      <div className="px-4 pb-3 pt-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-sky-600 to-emerald-500 text-white shadow-sm">
+              <HeartPulse size={18} />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">EcoDiab AI</p>
+              <p className="text-sm font-semibold text-slate-900">Clinical Operations</p>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={onOpenMenu}
-              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
+              aria-label="Notifications"
+              className="relative grid h-10 w-10 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-600"
             >
-              <Menu size={18} />
+              <Bell size={18} />
+              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald-500" />
             </button>
-            <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
+            <button
+              type="button"
+              aria-label="Open profile"
+              className="flex h-10 items-center gap-1 rounded-2xl border border-slate-200 bg-white px-2.5"
+            >
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-sky-100 text-sky-700">
+                <UserRound size={14} />
+              </span>
+              <ChevronDown size={14} className="text-slate-400" />
+            </button>
           </div>
-          <p className="text-sm text-slate-500">Welcome back, Dr. Alicia Chen · Care Operations</p>
         </div>
-
-        <div className="flex items-center gap-3">
-          <label className="relative hidden md:block">
-            <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="search"
-              placeholder="Search patients, alerts, reports..."
-              className="h-10 w-72 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none ring-sky-200 transition focus:border-sky-200 focus:ring"
-            />
-          </label>
-
-          <button type="button" className="relative rounded-xl border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-50">
-            <Bell size={18} />
-            <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-emerald-500" />
-          </button>
-
-          <button type="button" className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 hover:bg-slate-50">
-            <div className="grid h-8 w-8 place-items-center rounded-full bg-sky-100 text-sm font-semibold text-sky-700">AC</div>
-            <span className="hidden text-sm font-medium text-slate-700 sm:inline">Admin</span>
-          </button>
+        <div className="mt-3">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
+          <p className="text-sm text-slate-500">Assigned region: North Bay Clinics</p>
         </div>
       </div>
     </header>

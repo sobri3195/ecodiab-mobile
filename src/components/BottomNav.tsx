@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Ellipsis } from 'lucide-react';
 import { useAlertCenter } from '../contexts/alert-center-context';
 import { bottomSheetModules, primaryTabs } from '../lib/bottom-nav-config';
 
@@ -9,17 +10,6 @@ const isRouteActive = (pathname: string, route: string): boolean => {
   }
 
   return pathname === route || pathname.startsWith(`${route}/`);
-};
-
-const tabIcons: Record<string, string> = {
-  dashboard: '🏠',
-  patients: '🧑‍⚕️',
-  alerts: '🔔',
-  education: '📚',
-  analytics: '📈',
-  scheduling: '📅',
-  reports: '🧾',
-  settings: '⚙️',
 };
 
 const BottomNav = () => {
@@ -49,10 +39,11 @@ const BottomNav = () => {
 
   return (
     <>
-      <div className="bottom-nav-wrap" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <nav aria-label="Mobile bottom navigation" className="bottom-nav">
-          <ul className="bottom-nav-list">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.75rem)' }}>
+        <nav aria-label="Mobile bottom navigation" className="pointer-events-auto mx-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white/95 p-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.12)] backdrop-blur">
+          <ul className="grid grid-cols-5 gap-1">
             {primaryTabs.map((tab) => {
+              const Icon = tab.icon;
               const active = isRouteActive(pathname, tab.route);
 
               return (
@@ -61,17 +52,14 @@ const BottomNav = () => {
                     to={tab.route}
                     aria-label={`Go to ${tab.name}`}
                     aria-current={active ? 'page' : undefined}
-                    className={`bottom-nav-item ${active ? 'bottom-nav-item-active' : ''}`.trim()}
+                    className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl text-[11px] font-medium transition ${
+                      active ? 'bg-sky-50 text-sky-700' : 'text-slate-500'
+                    }`}
                   >
-                    <span aria-hidden="true" className="bottom-nav-icon">
-                      {tabIcons[tab.id] ?? '•'}
-                    </span>
+                    <Icon size={16} />
                     <span>{tab.name}</span>
                     {tab.id === 'alerts' && unresolvedCount > 0 ? (
-                      <span
-                        aria-label={`${unresolvedCount} unresolved alerts`}
-                        className="bottom-nav-badge"
-                      >
+                      <span aria-label={`${unresolvedCount} unresolved alerts`} className="absolute right-2 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
                         {unresolvedCount > 99 ? '99+' : unresolvedCount}
                       </span>
                     ) : null}
@@ -86,11 +74,11 @@ const BottomNav = () => {
                 aria-expanded={isSheetOpen}
                 aria-controls="more-modules-sheet"
                 onClick={() => setIsSheetOpen((open) => !open)}
-                className={`bottom-nav-item bottom-nav-button ${isSheetOpen ? 'bottom-nav-item-active' : ''}`.trim()}
+                className={`flex min-h-14 w-full flex-col items-center justify-center gap-1 rounded-2xl text-[11px] font-medium transition ${
+                  isSheetOpen ? 'bg-sky-50 text-sky-700' : 'text-slate-500'
+                }`}
               >
-                <span aria-hidden="true" className="bottom-nav-icon">
-                  ☰
-                </span>
+                <Ellipsis size={16} />
                 <span>More</span>
               </button>
             </li>
@@ -103,18 +91,11 @@ const BottomNav = () => {
           <button
             type="button"
             aria-label="Close more modules sheet"
-            className="bottom-sheet-overlay"
+            className="fixed inset-0 z-40 bg-slate-900/40"
             onClick={() => setIsSheetOpen(false)}
           />
-          <section
-            id="more-modules-sheet"
-            aria-label="More modules"
-            className="bottom-sheet"
-            style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
-          >
-            <div className="bottom-sheet-grabber" aria-hidden="true">
-              <span />
-            </div>
+          <section id="more-modules-sheet" aria-label="More modules" className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-3xl border border-slate-200 bg-white p-4 shadow-2xl" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
+            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-200" aria-hidden="true" />
             <label htmlFor="module-search" className="sr-only">
               Search modules
             </label>
@@ -124,33 +105,32 @@ const BottomNav = () => {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search modules"
-              className="bottom-sheet-search"
+              className="mb-3 h-10 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none focus:border-sky-200 focus:ring-2 focus:ring-sky-100"
             />
 
-            <ul className="bottom-sheet-list">
-              {filteredModules.map((module) => (
-                <li key={module.id}>
-                  <NavLink
-                    to={module.route}
-                    aria-label={`Go to ${module.name}`}
-                    className="bottom-sheet-link"
-                    onClick={() => setIsSheetOpen(false)}
-                  >
-                    <span className="bottom-sheet-link-icon" aria-hidden="true">
-                      {tabIcons[module.id] ?? '📦'}
-                    </span>
-                    <div>
-                      <div className="bottom-sheet-link-title">{module.name}</div>
-                      {module.description ? (
-                        <p className="bottom-sheet-link-description">{module.description}</p>
-                      ) : null}
-                    </div>
-                  </NavLink>
-                </li>
-              ))}
-              {filteredModules.length === 0 ? (
-                <li className="bottom-sheet-empty">No modules found.</li>
-              ) : null}
+            <ul className="space-y-2">
+              {filteredModules.map((module) => {
+                const Icon = module.icon;
+                return (
+                  <li key={module.id}>
+                    <NavLink
+                      to={module.route}
+                      aria-label={`Go to ${module.name}`}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3"
+                      onClick={() => setIsSheetOpen(false)}
+                    >
+                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-sky-50 text-sky-700">
+                        <Icon size={16} />
+                      </span>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-800">{module.name}</div>
+                        <p className="text-xs text-slate-500">{module.description}</p>
+                      </div>
+                    </NavLink>
+                  </li>
+                );
+              })}
+              {filteredModules.length === 0 ? <li className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-500">No modules found.</li> : null}
             </ul>
           </section>
         </>
