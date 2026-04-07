@@ -5,6 +5,9 @@ import ModulePage from './pages/ModulePage';
 import EducationCrudPage from './pages/EducationCrudPage';
 import TrackerCrudPage from './pages/TrackerCrudPage';
 import CommunityCrudPage from './pages/CommunityCrudPage';
+import ConsultationCrudPage from './pages/ConsultationCrudPage';
+import ChallengeCrudPage from './pages/ChallengeCrudPage';
+import ProfileCrudPage from './pages/ProfileCrudPage';
 import { workspaceModules } from './lib/module-catalog';
 
 const App = () => {
@@ -26,6 +29,12 @@ const App = () => {
                   <TrackerCrudPage />
                 ) : module.id === 'komunitas' ? (
                   <CommunityCrudPage />
+                ) : module.id === 'konsultasi' ? (
+                  <ConsultationCrudPage />
+                ) : module.id === 'tantangan' ? (
+                  <ChallengeCrudPage />
+                ) : module.id === 'profil' ? (
+                  <ProfileCrudPage />
                 ) : (
                   <ModulePage module={module} />
                 )
