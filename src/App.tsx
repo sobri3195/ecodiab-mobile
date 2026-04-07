@@ -3,6 +3,8 @@ import DashboardPage from './pages/DashboardPage';
 import AppShell from './layouts/AppShell';
 import ModulePage from './pages/ModulePage';
 import EducationCrudPage from './pages/EducationCrudPage';
+import TrackerCrudPage from './pages/TrackerCrudPage';
+import CommunityCrudPage from './pages/CommunityCrudPage';
 import { workspaceModules } from './lib/module-catalog';
 
 const App = () => {
@@ -17,7 +19,17 @@ const App = () => {
             <Route
               key={module.id}
               path={module.route}
-              element={module.id === 'edukasi' ? <EducationCrudPage /> : <ModulePage module={module} />}
+              element={
+                module.id === 'edukasi' ? (
+                  <EducationCrudPage />
+                ) : module.id === 'tracker' ? (
+                  <TrackerCrudPage />
+                ) : module.id === 'komunitas' ? (
+                  <CommunityCrudPage />
+                ) : (
+                  <ModulePage module={module} />
+                )
+              }
             />
           ))}
           <Route path="*" element={<Navigate to="/" replace />} />
