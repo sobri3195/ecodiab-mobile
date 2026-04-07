@@ -1,4 +1,5 @@
 import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import StatCard from '../components/dashboard/StatCard';
 import SectionCard from '../components/mobile/SectionCard';
 import StatusBadge from '../components/mobile/StatusBadge';
@@ -17,7 +18,72 @@ const signalVariantMap: Record<string, 'critical' | 'medium' | 'low'> = {
   Stabil: 'low',
 };
 
+type QuickLog = {
+  id: string;
+  glucoseLevel: string;
+  note: string;
+  createdAt: string;
+};
+
+const QUICK_LOG_STORAGE_KEY = 'ecodiab-quick-logs';
+
 const DashboardPage = () => {
+  const [glucoseLevel, setGlucoseLevel] = useState('');
+  const [note, setNote] = useState('');
+  const [quickLogs, setQuickLogs] = useState<QuickLog[]>([]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const savedLogs = window.localStorage.getItem(QUICK_LOG_STORAGE_KEY);
+    if (!savedLogs) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(savedLogs) as QuickLog[];
+      if (Array.isArray(parsed)) {
+        setQuickLogs(parsed);
+      }
+    } catch {
+      window.localStorage.removeItem(QUICK_LOG_STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.localStorage.setItem(QUICK_LOG_STORAGE_KEY, JSON.stringify(quickLogs));
+  }, [quickLogs]);
+
+  const latestLogs = useMemo(() => quickLogs.slice(0, 5), [quickLogs]);
+
+  const handleQuickLogSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedGlucose = glucoseLevel.trim();
+    const trimmedNote = note.trim();
+
+    if (!trimmedGlucose || !trimmedNote) {
+      return;
+    }
+
+    const newLog: QuickLog = {
+      id: crypto.randomUUID(),
+      glucoseLevel: trimmedGlucose,
+      note: trimmedNote,
+      createdAt: new Date().toISOString(),
+    };
+
+    setQuickLogs((prev) => [newLog, ...prev]);
+    setGlucoseLevel('');
+    setNote('');
+  };
+
   return (
     <div className="space-y-4 pb-2">
       <section className="rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-600 p-4 text-white shadow-lg shadow-emerald-500/25">
@@ -33,6 +99,65 @@ const DashboardPage = () => {
           </button>
         </div>
       </section>
+
+      <SectionCard title="Tambah Log Cepat" subtitle="Input data harian Anda, otomatis tersimpan di perangkat.">
+        <form className="space-y-2.5" onSubmit={handleQuickLogSubmit}>
+          <div>
+            <label htmlFor="glucoseLevel" className="text-xs font-medium text-slate-700">
+              Gula darah (mg/dL)
+            </label>
+            <input
+              id="glucoseLevel"
+              name="glucoseLevel"
+              type="number"
+              inputMode="numeric"
+              min="0"
+              className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 outline-none ring-sky-500 transition focus:ring-2"
+              placeholder="Contoh: 120"
+              value={glucoseLevel}
+              onChange={(event) => setGlucoseLevel(event.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="quickNote" className="text-xs font-medium text-slate-700">
+              Catatan
+            </label>
+            <textarea
+              id="quickNote"
+              name="quickNote"
+              rows={2}
+              className="mt-1 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 outline-none ring-sky-500 transition focus:ring-2"
+              placeholder="Contoh: Setelah sarapan"
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full rounded-2xl bg-sky-600 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white"
+          >
+            Simpan Log
+          </button>
+        </form>
+
+        <div className="mt-3 space-y-2">
+          {latestLogs.length > 0 ? (
+            latestLogs.map((log) => (
+              <div key={log.id} className="rounded-2xl bg-slate-50 p-3 text-xs text-slate-600">
+                <p className="text-sm font-semibold text-slate-900">{log.glucoseLevel} mg/dL</p>
+                <p className="mt-1">{log.note}</p>
+                <p className="mt-1 text-[11px] text-slate-400">{new Date(log.createdAt).toLocaleString('id-ID')}</p>
+              </div>
+            ))
+          ) : (
+            <p className="rounded-2xl bg-slate-50 p-3 text-xs text-slate-500">Belum ada log. Mulai isi data pertama Anda.</p>
+          )}
+        </div>
+      </SectionCard>
 
       <div className="grid grid-cols-2 gap-3">
         {deepDiveMetrics.map((metric) => (
