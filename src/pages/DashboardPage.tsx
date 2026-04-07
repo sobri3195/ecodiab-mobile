@@ -31,6 +31,7 @@ const DashboardPage = () => {
   const [glucoseLevel, setGlucoseLevel] = useState('');
   const [note, setNote] = useState('');
   const [quickLogs, setQuickLogs] = useState<QuickLog[]>([]);
+  const [editingLogId, setEditingLogId] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -72,14 +73,52 @@ const DashboardPage = () => {
       return;
     }
 
-    const newLog: QuickLog = {
-      id: crypto.randomUUID(),
-      glucoseLevel: trimmedGlucose,
-      note: trimmedNote,
-      createdAt: new Date().toISOString(),
-    };
+    if (editingLogId) {
+      setQuickLogs((prev) =>
+        prev.map((log) =>
+          log.id === editingLogId
+            ? {
+                ...log,
+                glucoseLevel: trimmedGlucose,
+                note: trimmedNote,
+              }
+            : log,
+        ),
+      );
+      setEditingLogId(null);
+    } else {
+      const newLog: QuickLog = {
+        id: crypto.randomUUID(),
+        glucoseLevel: trimmedGlucose,
+        note: trimmedNote,
+        createdAt: new Date().toISOString(),
+      };
 
-    setQuickLogs((prev) => [newLog, ...prev]);
+      setQuickLogs((prev) => [newLog, ...prev]);
+    }
+
+    setGlucoseLevel('');
+    setNote('');
+  };
+
+  const handleEditLog = (log: QuickLog) => {
+    setEditingLogId(log.id);
+    setGlucoseLevel(log.glucoseLevel);
+    setNote(log.note);
+  };
+
+  const handleDeleteLog = (logId: string) => {
+    setQuickLogs((prev) => prev.filter((log) => log.id !== logId));
+
+    if (editingLogId === logId) {
+      setEditingLogId(null);
+      setGlucoseLevel('');
+      setNote('');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingLogId(null);
     setGlucoseLevel('');
     setNote('');
   };
@@ -100,7 +139,10 @@ const DashboardPage = () => {
         </div>
       </section>
 
-      <SectionCard title="Tambah Log Cepat" subtitle="Input data harian Anda, otomatis tersimpan di perangkat.">
+      <SectionCard
+        title={editingLogId ? 'Edit Log Cepat' : 'Tambah Log Cepat'}
+        subtitle="Input data harian Anda, otomatis tersimpan di perangkat."
+      >
         <form className="space-y-2.5" onSubmit={handleQuickLogSubmit}>
           <div>
             <label htmlFor="glucoseLevel" className="text-xs font-medium text-slate-700">
@@ -136,12 +178,23 @@ const DashboardPage = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full rounded-2xl bg-sky-600 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white"
-          >
-            Simpan Log
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="submit"
+              className="w-full rounded-2xl bg-sky-600 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white"
+            >
+              {editingLogId ? 'Perbarui Log' : 'Simpan Log'}
+            </button>
+            {editingLogId && (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                className="rounded-2xl border border-slate-300 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-700"
+              >
+                Batal
+              </button>
+            )}
+          </div>
         </form>
 
         <div className="mt-3 space-y-2">
@@ -151,6 +204,22 @@ const DashboardPage = () => {
                 <p className="text-sm font-semibold text-slate-900">{log.glucoseLevel} mg/dL</p>
                 <p className="mt-1">{log.note}</p>
                 <p className="mt-1 text-[11px] text-slate-400">{new Date(log.createdAt).toLocaleString('id-ID')}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleEditLog(log)}
+                    className="rounded-xl bg-sky-100 px-2.5 py-1 text-[11px] font-semibold text-sky-700"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteLog(log.id)}
+                    className="rounded-xl bg-rose-100 px-2.5 py-1 text-[11px] font-semibold text-rose-700"
+                  >
+                    Hapus
+                  </button>
+                </div>
               </div>
             ))
           ) : (
