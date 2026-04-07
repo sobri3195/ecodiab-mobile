@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import BottomNav from '../BottomNav';
@@ -7,17 +8,17 @@ describe('BottomNav', () => {
   it('highlights active tab based on current route', () => {
     render(
       <AlertCenterProvider value={{ unresolvedCount: 0 }}>
-        <MemoryRouter initialEntries={['/patients']}>
+        <MemoryRouter initialEntries={['/tracker']}>
           <BottomNav />
         </MemoryRouter>
       </AlertCenterProvider>,
     );
 
-    expect(screen.getByLabelText('Go to Patients')).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByLabelText('Go to Dashboard')).not.toHaveAttribute('aria-current');
+    expect(screen.getByLabelText('Go to Tracker')).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByLabelText('Go to Beranda')).not.toHaveAttribute('aria-current');
   });
 
-  it('shows alerts badge when unresolved count is greater than zero', () => {
+  it('shows community badge when unresolved count is greater than zero', () => {
     render(
       <AlertCenterProvider value={{ unresolvedCount: 4 }}>
         <MemoryRouter>
@@ -26,6 +27,6 @@ describe('BottomNav', () => {
       </AlertCenterProvider>,
     );
 
-    expect(screen.getByLabelText('4 unresolved alerts')).toBeInTheDocument();
+    expect(screen.getByLabelText('4 unread community notifications')).toBeInTheDocument();
   });
 });

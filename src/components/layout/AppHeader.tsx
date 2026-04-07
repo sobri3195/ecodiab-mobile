@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, HeartPulse, UserRound } from 'lucide-react';
+import { Bell, ChevronDown, Leaf, UserRound } from 'lucide-react';
 
 type AppHeaderProps = {
   title: string;
@@ -10,12 +10,12 @@ const AppHeader = ({ title }: AppHeaderProps) => {
       <div className="px-4 pb-3 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-sky-600 to-emerald-500 text-white shadow-sm">
-              <HeartPulse size={18} />
+            <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm">
+              <Leaf size={18} />
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">EcoDiab AI</p>
-              <p className="text-sm font-semibold text-slate-900">Clinical Operations</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">EcoDiab</p>
+              <p className="text-sm font-semibold text-slate-900">Personal Diabetes Assistant</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ const AppHeader = ({ title }: AppHeaderProps) => {
         </div>
         <div className="mt-3">
           <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
-          <p className="text-sm text-slate-500">Assigned region: North Bay Clinics</p>
+          <p className="text-sm text-slate-500">Fokus hari ini: stabilkan gula pagi & tingkatkan konsistensi aktivitas.</p>
         </div>
       </div>
     </header>
