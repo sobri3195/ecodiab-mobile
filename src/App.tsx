@@ -5,7 +5,7 @@ import ModulePage from './pages/ModulePage';
 import { workspaceModules } from './lib/module-catalog';
 
 const App = () => {
-  const modulesWithoutDashboard = workspaceModules.filter((module) => module.id !== 'dashboard');
+  const modulesWithoutDashboard = workspaceModules.filter((module) => module.id !== 'beranda');
 
   return (
     <BrowserRouter>
