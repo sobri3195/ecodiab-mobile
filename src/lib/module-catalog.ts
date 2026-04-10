@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   BookOpen,
+  Camera,
   ChartNoAxesCombined,
   FileText,
   Flame,
@@ -32,6 +33,14 @@ export const workspaceModules: WorkspaceModule[] = [
     route: '/edukasi',
     description: 'Modul belajar bertahap untuk kendali diabetes berkelanjutan.',
     icon: BookOpen,
+  },
+  {
+    id: 'retinopati',
+    name: 'Retinopati',
+    route: '/retinopati',
+    description:
+      'Retinopathy screening AI via kamera depan hape untuk deteksi risiko retina dini dan prioritisasi rujukan di setting sumber daya terbatas.',
+    icon: Camera,
   },
   {
     id: 'tracker',
