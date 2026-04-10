@@ -43,6 +43,14 @@ export const workspaceModules: WorkspaceModule[] = [
     icon: Camera,
   },
   {
+    id: 'ulkus-diabetik',
+    name: 'Ulkus',
+    route: '/ulkus-diabetik',
+    description:
+      'Smart foot ulcer vision via kamera belakang hape untuk membantu triage dan severity scoring dari foto luka agar eskalasi perawatan lebih cepat.',
+    icon: Camera,
+  },
+  {
     id: 'tracker',
     name: 'Tracker',
     route: '/tracker',

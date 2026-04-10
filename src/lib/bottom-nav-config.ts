@@ -1,6 +1,13 @@
 import { workspaceModules } from './module-catalog';
 
-export const PRIMARY_TAB_IDS = ['beranda', 'edukasi', 'retinopati', 'tracker', 'komunitas'] as const;
+export const PRIMARY_TAB_IDS = [
+  'beranda',
+  'edukasi',
+  'retinopati',
+  'ulkus-diabetik',
+  'tracker',
+  'komunitas',
+] as const;
 
 export type PrimaryTabId = (typeof PRIMARY_TAB_IDS)[number];
 
