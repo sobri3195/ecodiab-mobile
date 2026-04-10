@@ -57,7 +57,10 @@ const BottomNav = () => {
           aria-label="Mobile bottom navigation"
           className="pointer-events-auto mx-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white/95 p-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.12)] backdrop-blur"
         >
-          <ul className="grid grid-cols-5 gap-1">
+          <ul
+            className="grid gap-1"
+            style={{ gridTemplateColumns: `repeat(${primaryTabs.length + 1}, minmax(0, 1fr))` }}
+          >
             {primaryTabs.map((tab) => {
               const Icon = tab.icon;
               const active = isRouteActive(pathname, tab.route);
